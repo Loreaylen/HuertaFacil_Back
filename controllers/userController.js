@@ -42,7 +42,9 @@ const userController = {
     if (test.length === 0) {
       send.errors = []
       const err = {
-        "msg": "El usuario no existe"
+        "status": 404,
+        "title": "Not Found",
+        "message": "El usuario no existe"
       }
       send.errors.push(err)
       res.send(send)
@@ -50,7 +52,9 @@ const userController = {
     else if (data.length === 0) {
       send.errors = []
       const err = {
-        "msg": "El usuario no tiene favoritos"
+        "status": 404,
+        "title": "Not found",
+        "message": "El usuario no tiene favoritos"
       }
       send.errors.push(err)
       res.send(send)
@@ -58,6 +62,56 @@ const userController = {
     else {
       send.data = data
       res.send(send)
+    }
+  },
+  'setFav': async function (req, res) {
+    const send = {}
+    var id_usuario = req.body.id_usuario
+    var id_especie = req.body.id_especie
+    const userTest = await sql `SELECT checkUserById(${id_usuario})`
+    const plantTest = await sql `SELECT * FROM getById(${id_especie})`
+    
+    if (userTest.length === 0) {
+      send.errors = []
+      const err = {
+        "status": 404,
+        "title": "Not found",
+        "message": "El usuario no existe"
+      }
+      send.errors.push(err)
+      res.send(send)
+    }
+    else if (plantTest.length === 0) {
+      send.errors = []
+      const err = {
+        "status": 404,
+        "title": "Not found",
+        "message": "La planta ingresada no existe"
+      }
+      send.errors.push(err)
+      res.send(send)
+    }
+    else {
+      try{
+        await sql `SELECT setFav(${id_usuario},${id_especie})`    
+        send.data = {
+        "status": 200,
+        "title": "Transaction OK",
+        "message": 'Favorito agregado'
+        }
+        res.send(send)
+      }
+      catch{
+      send.errors = []
+      const err = {
+        "status": 409,
+        "title": "Conflict",
+        "message": "La planta ya esta agregada en el listado de favoritos del usuario"
+      }
+      send.errors.push(err)
+      res.send(send)
+      }
+
     }
   },
   'updateUser': function (req, res) {
