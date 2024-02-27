@@ -38,7 +38,7 @@ if(data.length === 0){
 'getCards': async function(req, res){
 // agregar lógica de paginado
 const page = parseInt(req.query.page) || null
-const limit = parseInt(req.query.limit) || 0
+const limit = parseInt(req.query.limit) || null
 
 const startIndex = (page - 1) * limit
 const endIndex = page * limit
