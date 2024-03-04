@@ -182,7 +182,7 @@ const plantsController = {
     try {
       capWord = req.charAt(0).toUpperCase() + req.slice(1).toLowerCase()
       console.log(capWord)
-      var getCardList = await sql `SELECT * FROM getCards(limit_val => 100) WHERE nombre LIKE ${capWord} || '%'`
+      var getCardList = await sql `SELECT * FROM getCards(limit_val => 100) WHERE nombre LIKE '%' || ${capWord} || '%'`
       var totalElements = Object.keys(getCardList).length
 
       if(totalElements == 0) return res.status(404).send({errors: [{"status" : 404, "title" : "Not Found", "message" : "No se ha encontrado ninguna especie que tenga ese nombre"}]}) 
