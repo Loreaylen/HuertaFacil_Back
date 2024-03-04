@@ -34,14 +34,13 @@ const plantsController = {
       paginacion, dado que ningun vegetal supera los 15 por pagina.
       Esto es porque la llamada se realiza directamente con la solicitud de paginacion y hay un error cuando se busca una planta que queda fuera del limite de rows devueltas.
       */
-      if (nombrePlanta != ""){
+      if (nombrePlanta.length > 0){
         limit = null
         nombrePlanta = nombrePlanta.charAt(0).toUpperCase() + nombrePlanta.slice(1).toLowerCase()
       }
-      else limit = 15
       
-      const totalPags = await sql`SELECT * FROM filterBy(provincia_param => ${provincia}, clima_param => ${clima}, tipo_planta_param =>${tipoPlanta}) WHERE nombre LIKE ${nombrePlanta} || '%'`
-      const data = await sql`SELECT * FROM filterBy(offset_param => ${startIndex}, limit_param => ${limit}, provincia_param => ${provincia}, clima_param => ${clima}, tipo_planta_param =>${tipoPlanta}) WHERE nombre LIKE ${nombrePlanta} || '%'`
+      const totalPags = await sql`SELECT * FROM filterBy(provincia_param => ${provincia}, clima_param => ${clima}, tipo_planta_param =>${tipoPlanta}) WHERE nombre LIKE '%' || ${nombrePlanta} || '%'`
+      const data = await sql`SELECT * FROM filterBy(offset_param => ${startIndex}, limit_param => ${limit}, provincia_param => ${provincia}, clima_param => ${clima}, tipo_planta_param =>${tipoPlanta}) WHERE nombre LIKE '%' || ${nombrePlanta} || '%'`
       const paginado = {
         total: totalPags.length,
         items_per_page: limit == null ? 'all' : limit,
